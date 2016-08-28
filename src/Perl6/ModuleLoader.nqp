@@ -156,6 +156,9 @@ class Perl6::ModuleLoader does Perl6::ModuleLoaderVMConfig {
             my $sym := $_.key;
             if !%known_symbols{$sym} {
                 $target.symbol($sym, :scope('lexical'), :value($_.value));
+                $target[0].push(QAST::Var.new(
+                    :scope('lexical'), :name($sym), :decl('static'), :value($_.value)
+                ));
             }
             elsif nqp::decont($target.symbol($sym)<value>) =:= nqp::decont($_.value) { # Stash entries are containerized
                 # No problemo; a symbol can't conflict with itself.
